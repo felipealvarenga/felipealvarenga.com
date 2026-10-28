@@ -29,7 +29,7 @@ tasks/              this plan, context, lessons (ignored by the deploy)
 - [x] M1 Assets (1.7 MB models, 1.7 MB HDRI): desk, office chair, laptop, desk lamp, stationery, plant, ceiling lamp; compress; license file with attribution
 - [x] M2 Scene, first pass (bloom, HDRI, RectAreaLight screens, rain window): GLTF placement, HDRI, screens as emissive boxes with RectAreaLight, bloom, fog, floor reflection
 - [ ] M3 Window with rain shader and a night city/mountain backdrop; lamp warmth vs screen cool
-- [ ] M4 Screens: live canvases (PR counter, Slack lines, P&L chart) that tick; hover zoom; click opens section
+- [x] M4 Screens, first pass (3 big, 5 agents, in-room panel with the real sections, focus flights): live canvases (PR counter, Slack lines, P&L chart) that tick; hover zoom; click opens section
 - [ ] M5 Gate: byte-counted loading, Enter, AUTO rule, LO-FI link, Esc; reduced-motion respected
 - [ ] M6 Phone: lower pixel ratio, no bloom, tap targets, portrait framing
 - [ ] M7 Polish: sound toggle, your objects (CFP certificate frame, Vety sticker), easter eggs

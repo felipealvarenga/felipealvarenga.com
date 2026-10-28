@@ -1,11 +1,19 @@
 {
   "$schema": "node_modules/wrangler/config-schema.json",
   "name": "felipealvarenga-com",
+  "main": "worker.js",
   "compatibility_date": "2026-10-23",
   "observability": {
     "enabled": true
   },
+  "routes": [
+    { "pattern": "felipealvarenga.com", "custom_domain": true },
+    { "pattern": "www.felipealvarenga.com", "custom_domain": true },
+    { "pattern": "felipealvarenga.com.br", "custom_domain": true },
+    { "pattern": "www.felipealvarenga.com.br", "custom_domain": true }
+  ],
   "assets": {
-    "directory": "."
+    "directory": ".",
+    "binding": "ASSETS"
   }
 }

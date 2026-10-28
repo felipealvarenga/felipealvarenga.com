@@ -4,3 +4,5 @@ worker.js
 CNAME
 .nojekyll
 .git
+PRODUCT.md
+DESIGN.md

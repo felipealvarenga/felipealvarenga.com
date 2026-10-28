@@ -31,7 +31,8 @@ nav .mode{font:400 .75rem/1 var(--mono);letter-spacing:.08em}
 #bar{height:2px;background:var(--line);border-radius:2px;overflow:hidden;margin:0 0 .5rem}
 #bar i{display:block;height:100%;width:0;background:var(--ink);transition:width .25s}
 #pct{font:400 .75rem/1 var(--mono);color:var(--muted)}
-#enter{margin-top:1.25rem;display:none;padding:.6rem 1rem;border:1px solid var(--line);border-radius:999px;background:transparent;color:var(--ink);font:500 .9rem var(--sans);cursor:pointer}
+#status{font-size:.8rem;color:var(--muted);min-height:1.2rem;margin:.5rem 0 0}
+#enter{margin-top:1rem;display:none;padding:.6rem 1rem;border:1px solid var(--line);border-radius:999px;background:transparent;color:var(--ink);font:500 .9rem var(--sans);cursor:pointer}
 #enter:hover{border-color:var(--ink)}
 #label{position:fixed;z-index:3;pointer-events:none;font:400 .75rem/1 var(--mono);letter-spacing:.06em;text-transform:uppercase;color:var(--ink);background:oklch(10% 0.005 250 / .8);border:1px solid var(--line);padding:.4rem .6rem;border-radius:.3rem;transform:translate(.75rem,.75rem);opacity:0;transition:opacity .15s}
 #label.on{opacity:1}
@@ -45,113 +46,11 @@ nav .mode{font:400 .75rem/1 var(--mono);letter-spacing:.08em}
 <body>
 <nav aria-label="Site"><b><a href="/">Felipe Alvarenga</a></b><ul><li><a href="/#ai">AI</a></li><li><a href="/#work">Work</a></li><li><a href="/writing/">Writing</a></li><li><a href="/#press">Press</a></li><li><a class="mode" href="/?lofi=1" id="lofi">LO-FI</a></li><li><a class="mode" href="/room/" aria-current="page">HI-FI</a></li></ul></nav>
 <canvas id="gl" aria-label="A dark control room with a wall of screens, each one an agent at work. Click a screen to open a section of the site."></canvas>
-<div id="gate"><div class="box"><h1>The agent control room</h1><p>Fifteen screens, each one an agent at work. Click one to open a section.</p><div id="bar"><i></i></div><div id="pct">0%</div><button id="enter" type="button">Enter</button></div></div>
+<div id="gate"><div class="box"><h1>The agent control room</h1><p>A wall of screens, each one an agent at work. Click one to open a section. Press 1 to 4 for AI, Work, Writing, Press.</p><div id="bar"><i></i></div><div id="pct">0%</div><p id="status" aria-live="polite"></p><button id="enter" type="button">Enter</button></div></div>
 <div id="label"></div>
-<div id="hint" aria-hidden="true">CLICK A SCREEN · DRAG TO LOOK</div>
+<div id="hint" aria-hidden="true">CLICK A SCREEN · DRAG TO LOOK · ESC FOR LO-FI</div>
 <div id="fallback"><div><p>This browser can't draw the room. The reading version has everything.</p><p><a href="/?lofi=1">Go lo-fi</a></p></div></div>
-<script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js"}}</script>
-<script type="module">
-import * as THREE from "three";
-try{ localStorage.setItem("fa.mode","hifi"); }catch(e){}
-
-const canvas=document.getElementById("gl"), gate=document.getElementById("gate"), bar=document.querySelector("#bar i"), pct=document.getElementById("pct"), enter=document.getElementById("enter"), label=document.getElementById("label"), hint=document.getElementById("hint");
-let renderer;
-try{ renderer=new THREE.WebGLRenderer({canvas,antialias:true,powerPreference:"high-performance"}); }
-catch(e){ document.getElementById("fallback").style.display="grid"; throw e; }
-renderer.setPixelRatio(Math.min(devicePixelRatio,2));
-renderer.toneMapping=THREE.ACESFilmicToneMapping; renderer.toneMappingExposure=1.1;
-renderer.shadowMap.enabled=true; renderer.shadowMap.type=THREE.PCFSoftShadowMap;
-
-const scene=new THREE.Scene(); scene.background=new THREE.Color(0x07080b); scene.fog=new THREE.Fog(0x07080b,9,22);
-const camera=new THREE.PerspectiveCamera(42,1,.1,60); const camHome=new THREE.Vector3(0,1.6,5.0); camera.position.copy(camHome); const lookAt=new THREE.Vector3(0,1.55,-1);
-
-/* room: floor, walls, ceiling */
-const matWall=new THREE.MeshStandardMaterial({color:0x14161b,roughness:.95,metalness:0});
-const matFloor=new THREE.MeshStandardMaterial({color:0x0e1013,roughness:.6,metalness:.1});
-const W=10,D=12,H=3.4;
-const floor=new THREE.Mesh(new THREE.PlaneGeometry(W,D),matFloor); floor.rotation.x=-Math.PI/2; floor.position.z=D/2-4; floor.receiveShadow=true; scene.add(floor);
-const back=new THREE.Mesh(new THREE.PlaneGeometry(W,H),matWall); back.position.set(0,H/2,-4); back.receiveShadow=true; scene.add(back);
-const ceil=new THREE.Mesh(new THREE.PlaneGeometry(W,D),matWall); ceil.rotation.x=Math.PI/2; ceil.position.set(0,H,D/2-4); scene.add(ceil);
-for(const s of [-1,1]){ const side=new THREE.Mesh(new THREE.PlaneGeometry(D,H),matWall); side.rotation.y=s*Math.PI/2; side.position.set(-s*W/2,H/2,D/2-4); scene.add(side); }
-
-/* the wall of screens */
-const SECTIONS=[
-  {href:"/#ai",name:"AI work",lines:["heisenbags  PR #1922 merged","review: sandbox probe passed","15 agents · 5 functions","213 → 762 merged PRs"],chart:[196,371,346,360,725]},
-  {href:"/#work",name:"Work",lines:["Bags · Sr Staff · 2024–now","Hubla · Provi · Iperum","Vety · BTG Pactual","twenty years of money"],chart:[1,2,3,5,8]},
-  {href:"/writing/",name:"Writing",lines:["essay 1 · live","what breaks when an AI","reads a bank statement","0 of 24 running balances"],chart:[2,1,3,2,4]},
-  {href:"/#press",name:"Press",lines:["interviews · EN / PT","AI in accounting","agent-run teams","felipealvarengarc@gmail.com"],chart:[1,1,2,3,3]},
-];
-const AGENTS=["tax","sales","ops","funding","marketing","sentry intake","preview bot","reviewer","classifier","cfo chat","doc review","insights","memory","maestro","council"];
-function screenTexture(title,lines,chart,tint){
-  const c=document.createElement("canvas"); c.width=512; c.height=320; const g=c.getContext("2d");
-  g.fillStyle="#0b0d11"; g.fillRect(0,0,512,320);
-  g.strokeStyle="rgba(255,255,255,.08)"; for(let y=24;y<320;y+=24){ g.beginPath(); g.moveTo(0,y); g.lineTo(512,y); g.stroke(); }
-  g.fillStyle=tint; g.font="500 22px ui-monospace, Menlo, monospace"; g.fillText(title.toUpperCase(),24,40);
-  g.fillStyle="#d9dbe0"; g.font="18px ui-monospace, Menlo, monospace"; lines.forEach((l,i)=>g.fillText(l,24,84+i*30));
-  if(chart){ const mx=Math.max(...chart); chart.forEach((v,i)=>{ const h=Math.round(v/mx*80); g.fillStyle=i===chart.length-1?tint:"rgba(217,219,224,.35)"; g.fillRect(24+i*52,290-h,36,h); }); }
-  g.fillStyle=tint; g.beginPath(); g.arc(480,36,6,0,Math.PI*2); g.fill();
-  const t=new THREE.CanvasTexture(c); t.colorSpace=THREE.SRGBColorSpace; return t;
-}
-const TINTS=["#8fd3b0","#9ab7ff","#f0c987","#f29b9b"];
-const screens=[]; const group=new THREE.Group(); scene.add(group);
-const cols=5,rows=3,sw=1.5,sh=.9,gap=.12; const x0=-((cols-1)*(sw+gap))/2, y0=.95;
-let k=0;
-for(let r=0;r<rows;r++) for(let c=0;c<cols;c++){
-  const big=(r===1&&(c===1||c===2||c===3))||(r===0&&c===2);
-  const sec=big? SECTIONS[[0,1,2,3][ (r===0)?2 : (c===1?0:c===2?1:3) ]] : null;
-  const i=k++; const tint=sec?TINTS[SECTIONS.indexOf(sec)]:"#6f7480";
-  const tex=sec?screenTexture(sec.name,sec.lines,sec.chart,tint):screenTexture(AGENTS[i%AGENTS.length],["idle · waiting on queue","last run "+(3+i*7)+"m ago","ok"],null,tint);
-  const mat=new THREE.MeshBasicMaterial({map:tex,toneMapped:false});
-  const m=new THREE.Mesh(new THREE.PlaneGeometry(sw,sh),mat); m.position.set(x0+c*(sw+gap),y0+(rows-1-r)*(sh+gap),-3.97);
-  const bezel=new THREE.Mesh(new THREE.BoxGeometry(sw+.08,sh+.08,.06),new THREE.MeshStandardMaterial({color:0x1b1e25,roughness:.5,metalness:.4})); bezel.position.copy(m.position); bezel.position.z-=.035; group.add(bezel);
-  if(sec){ const glow=new THREE.PointLight(new THREE.Color(tint),.9,3.4,2); glow.position.copy(m.position); glow.position.z+=.5; glow.userData.screen=m; group.add(glow); }
-  m.userData={sec,tint,base:mat}; group.add(m); screens.push(m);
-}
-
-/* desk and chair silhouette */
-const matDesk=new THREE.MeshStandardMaterial({color:0x1a1d23,roughness:.7,metalness:.2});
-const desk=new THREE.Mesh(new THREE.BoxGeometry(3.2,.06,1.1),matDesk); desk.position.set(0,.78,-1.2); desk.castShadow=true; desk.receiveShadow=true; scene.add(desk);
-for(const sx of [-1.4,1.4]){ const leg=new THREE.Mesh(new THREE.BoxGeometry(.06,.76,1),matDesk); leg.position.set(sx,.38,-1.2); leg.castShadow=true; scene.add(leg); }
-const laptop=new THREE.Mesh(new THREE.BoxGeometry(.7,.02,.45),new THREE.MeshStandardMaterial({color:0x2a2d35,roughness:.4,metalness:.6})); laptop.position.set(.2,.82,-1.1); scene.add(laptop);
-const lid=new THREE.Mesh(new THREE.PlaneGeometry(.7,.42),new THREE.MeshBasicMaterial({map:screenTexture("felipealvarenga.com",["lo-fi version","everything is there","click any screen"],null,"#d9dbe0"),toneMapped:false})); lid.position.set(.2,1.05,-1.32); lid.rotation.x=-.25; scene.add(lid);
-const mug=new THREE.Mesh(new THREE.CylinderGeometry(.045,.04,.1,24),new THREE.MeshStandardMaterial({color:0xe8e4dc,roughness:.6})); mug.position.set(-.6,.86,-1.0); mug.castShadow=true; scene.add(mug);
-const matChair=new THREE.MeshStandardMaterial({color:0x15181e,roughness:.85}); const seat=new THREE.Mesh(new THREE.BoxGeometry(.55,.06,.55),matChair); seat.position.set(0,.47,-.35); seat.castShadow=true; scene.add(seat); const backrest=new THREE.Mesh(new THREE.BoxGeometry(.55,.5,.05),matChair); backrest.position.set(0,.75,-.1); backrest.castShadow=true; scene.add(backrest); const post=new THREE.Mesh(new THREE.CylinderGeometry(.03,.03,.45,12),matChair); post.position.set(0,.22,-.35); scene.add(post);
-
-/* light */
-scene.add(new THREE.AmbientLight(0x6670a0,.22)); scene.add(new THREE.HemisphereLight(0x3a4260,0x0a0b0e,.5));
-const key=new THREE.SpotLight(0xffe9c9,14,9,Math.PI/5,.6,1.6); key.position.set(-1.6,3.2,.4); key.target=desk; key.castShadow=true; key.shadow.mapSize.set(512,512); scene.add(key);
-const fill=new THREE.PointLight(0x4e7bff,3,9,2); fill.position.set(2.5,2.4,1.5); scene.add(fill); const strip=new THREE.PointLight(0xaab4d8,2.2,7,2); strip.position.set(0,3.2,-3.2); scene.add(strip);
-
-/* interaction */
-const ray=new THREE.Raycaster(), ptr=new THREE.Vector2(9,9); let hovered=null, dragging=false, px=0,py=0, yaw=0,pitch=0, tyaw=0,tpitch=0;
-function size(){ const w=innerWidth,h=innerHeight; renderer.setSize(w,h,false); camera.aspect=w/h; camera.updateProjectionMatrix(); }
-addEventListener("resize",size); size();
-canvas.addEventListener("pointermove",e=>{ ptr.x=e.clientX/innerWidth*2-1; ptr.y=-(e.clientY/innerHeight)*2+1; label.style.left=e.clientX+"px"; label.style.top=e.clientY+"px"; if(dragging){ tyaw+= (e.clientX-px)*.0035; tpitch+= (e.clientY-py)*.0025; tyaw=Math.max(-.55,Math.min(.55,tyaw)); tpitch=Math.max(-.25,Math.min(.25,tpitch)); px=e.clientX; py=e.clientY; } });
-canvas.addEventListener("pointerdown",e=>{ dragging=true; px=e.clientX; py=e.clientY; });
-addEventListener("pointerup",e=>{ const moved=Math.hypot(e.clientX-px,e.clientY-py)>6; dragging=false; if(!moved&&hovered&&hovered.userData.sec) location.href=hovered.userData.sec.href; });
-addEventListener("keydown",e=>{ if(e.key==="Escape") location.href="/?lofi=1"; });
-
-/* loading: count real work (textures made, first frames rendered) */
-let loaded=0; const steps=5; function tick(){ loaded++; const p=Math.min(100,Math.round(loaded/steps*100)); bar.style.width=p+"%"; pct.textContent=p+"%"; if(p>=100){ enter.style.display="inline-block"; pct.textContent="100% · ready"; } }
-tick(); tick();
-renderer.compile(scene,camera); tick();
-let warm=0, running=false;
-function frame(t){
-  if(running||warm<3) requestAnimationFrame(frame);
-  yaw+=(tyaw-yaw)*.06; pitch+=(tpitch-pitch)*.06;
-  const sway=Math.sin(t/4000)*.03;
-  camera.position.set(camHome.x+Math.sin(yaw+sway)*2.2, camHome.y+pitch*1.2, camHome.z-(1-Math.cos(yaw))*2.2);
-  camera.lookAt(lookAt.x+yaw*.6, lookAt.y+pitch*.4, lookAt.z);
-  ray.setFromCamera(ptr,camera); const hit=ray.intersectObjects(screens,false)[0]; const h=hit?hit.object:null;
-  if(h!==hovered){ if(hovered) hovered.scale.setScalar(1); hovered=h; if(h&&h.userData.sec){ h.scale.setScalar(1.04); label.textContent="open "+h.userData.sec.name; label.classList.add("on"); canvas.style.cursor="pointer"; } else { label.classList.remove("on"); canvas.style.cursor=dragging?"grabbing":"grab"; } }
-  group.children.forEach((o,i)=>{ if(o.isPointLight) o.intensity=.9*(0.85+0.15*Math.sin(t/900+i)); });
-  renderer.render(scene,camera);
-  if(warm<3){ warm++; if(warm===1||warm===3) tick(); }
-}
-requestAnimationFrame(frame);
-function open(){ if(running) return; running=true; gate.classList.add("out"); canvas.classList.add("on"); hint.classList.add("on"); requestAnimationFrame(frame); }
-enter.addEventListener("click",open);
-gate.addEventListener("click",e=>{ if(enter.style.display!=="none"&&e.target!==enter) open(); });
-</script>
+<script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/"}}</script>
+<script type="module" src="src/main.js"></script>
 </body>
 </html>

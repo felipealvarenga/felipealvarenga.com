@@ -6,3 +6,5 @@ CNAME
 .git
 PRODUCT.md
 DESIGN.md
+tasks
+room/src/*.map

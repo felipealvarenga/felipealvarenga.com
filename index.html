@@ -6,6 +6,8 @@
 <title>Felipe Alvarenga</title>
 <meta name="description" content="Felipe Alvarenga is a Senior Staff Software Engineer at Bags and a former founder. Twenty years of financial systems, now building the AI agents that run on them.">
 <link rel="canonical" href="https://felipealvarenga.com/">
+<script>/* AUTO: the reading version by default; the room once you have chosen it, on a desktop that can draw it */
+try{var q=new URLSearchParams(location.search);if(q.has("lofi")){localStorage.setItem("fa.mode","lofi")}else if(localStorage.getItem("fa.mode")==="hifi"&&matchMedia("(pointer:fine)").matches&&!matchMedia("(prefers-reduced-motion:reduce)").matches&&!(navigator.connection&&navigator.connection.saveData)){location.replace("/room/")}}catch(e){}</script>
 <link rel="alternate" type="application/rss+xml" title="Felipe Alvarenga, writing" href="https://felipealvarenga.com/feed.xml">
 <meta property="og:title" content="Felipe Alvarenga">
 <meta property="og:description" content="Senior Staff Software Engineer at Bags, former founder. Financial systems and the AI agents that run on them.">
@@ -38,6 +40,7 @@ nav b{font-weight:500}
 nav ul{display:flex;gap:1.25rem;margin:0;padding:0;list-style:none;font-size:.9rem;color:var(--muted)}
 nav a{text-decoration:none}
 nav a:hover{color:var(--ink)}
+nav .mode{font:400 .75rem/1 var(--mono);letter-spacing:.08em}nav .mode[aria-current]{color:var(--ink)}
 .intro{font-size:clamp(1.15rem,2.4vw,1.35rem);line-height:1.5;max-width:34ch;margin:0 0 .75rem;font-weight:500;letter-spacing:-.01em}
 .intro+p{color:var(--muted);max-width:52ch;margin-bottom:0}
 section{margin-top:clamp(2.75rem,8vw,4.5rem)}
@@ -67,7 +70,7 @@ footer span{margin-left:auto}
     <li><a href="#ai">AI</a></li>
     <li><a href="#work">Work</a></li>
     <li><a href="/writing/">Writing</a></li>
-    <li><a href="#press">Press</a></li>
+    <li><a href="#press">Press</a></li><li><a class="mode" href="/?lofi=1" aria-current="page">LO-FI</a></li><li><a class="mode" href="/room/">HI-FI</a></li>
     <li><a href="mailto:felipealvarengarc@gmail.com">Email</a></li>
   </ul>
 </nav>

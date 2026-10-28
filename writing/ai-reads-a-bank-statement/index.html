@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>What breaks when an AI reads a bank statement</title>
+<meta name="description" content="Eighteen months of running a language model against real small-business books. The model was rarely the problem.">
+<link rel="canonical" href="https://felipealvarenga.com/writing/ai-reads-a-bank-statement/">
+<meta property="og:title" content="What breaks when an AI reads a bank statement">
+<meta property="og:description" content="Eighteen months of running a language model against real small-business books. The model was rarely the problem.">
+<meta property="og:url" content="https://felipealvarenga.com/writing/ai-reads-a-bank-statement/">
+<meta property="og:type" content="article">
+<meta property="article:published_time" content="2026-10-28">
+<meta property="article:author" content="Felipe Alvarenga">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%23101114'/%3E%3Ctext x='16' y='22' text-anchor='middle' font-family='system-ui,sans-serif' font-size='17' font-weight='600' fill='%23f2f2f3'%3EF%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Geist+Mono:wght@400&display=swap">
+<style>
+:root{
+  color-scheme:dark;
+  --bg:oklch(13% 0.005 250);--row:oklch(19% 0.006 250);--ink:oklch(96% 0.003 250);--muted:oklch(66% 0.008 250);--line:oklch(26% 0.006 250);
+  --sans:"Geist",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;--mono:"Geist Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
+}
+@media (prefers-color-scheme:light){:root{
+  color-scheme:light;
+  --bg:oklch(99% 0.002 250);--row:oklch(95.5% 0.004 250);--ink:oklch(15% 0.006 250);--muted:oklch(50% 0.008 250);--line:oklch(90% 0.004 250);
+}}
+*{box-sizing:border-box}
+html{background:var(--bg)}
+body{margin:0;background:var(--bg);color:var(--ink);font:400 1rem/1.6 var(--sans);-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+main{max-width:42rem;margin:0 auto;padding:clamp(1.5rem,5vw,3.5rem) clamp(1rem,4vw,2rem) 4rem}
+a{color:inherit;text-decoration:underline;text-decoration-color:var(--line);text-decoration-thickness:1px;text-underline-offset:.2em;transition:text-decoration-color .15s}
+a:hover{text-decoration-color:var(--ink)}
+:focus-visible{outline:2px solid var(--ink);outline-offset:3px;border-radius:2px}
+p{max-width:62ch;margin:0 0 1rem}
+nav{display:flex;align-items:baseline;justify-content:space-between;gap:1rem;flex-wrap:wrap;margin-bottom:clamp(3rem,10vw,5.5rem)}
+nav b{font-weight:500}
+nav ul{display:flex;gap:1.25rem;margin:0;padding:0;list-style:none;font-size:.9rem;color:var(--muted)}
+nav a{text-decoration:none}
+nav a:hover{color:var(--ink)}
+.intro{font-size:clamp(1.15rem,2.4vw,1.35rem);line-height:1.5;max-width:34ch;margin:0 0 .75rem;font-weight:500;letter-spacing:-.01em}
+.intro+p{color:var(--muted);max-width:52ch;margin-bottom:0}
+section{margin-top:clamp(2.75rem,8vw,4.5rem)}
+h2{font:500 .8rem/1 var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin:0 0 .5rem}
+.rows{list-style:none;margin:0;padding:0}
+.rows li{border-top:1px solid var(--line)}
+.rows li:last-child{border-bottom:1px solid var(--line)}
+.row{display:grid;grid-template-columns:4rem 1fr auto;gap:.25rem 1rem;align-items:baseline;padding:.7rem .6rem;margin:0 -.6rem;border-radius:.4rem;text-decoration:none;transition:background .15s}
+a.row:hover{background:var(--row)}
+.row time,.row .meta{font:400 .8rem/1.6 var(--mono);color:var(--muted);white-space:nowrap}
+.row .meta{text-align:right}
+.row span{display:block}
+.row small{display:block;font-size:.9rem;color:var(--muted)}
+@media (max-width:480px){.row{grid-template-columns:4rem 1fr}.row .meta{grid-column:2;text-align:left}}
+.press p{color:var(--muted)}
+.press p b{color:var(--ink);font-weight:500}
+footer{margin-top:clamp(3rem,10vw,5rem);padding-top:1.25rem;border-top:1px solid var(--line);display:flex;flex-wrap:wrap;gap:.5rem 1.25rem;font-size:.9rem;color:var(--muted)}
+footer span{margin-left:auto}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+
+article h1{font:600 clamp(1.7rem,4.5vw,2.3rem)/1.15 var(--sans);letter-spacing:-.02em;margin:0 0 .75rem;max-width:24ch}
+article .standfirst{color:var(--muted);font-size:1.1rem;max-width:52ch;margin-bottom:2rem}
+article h2{font:600 1.2rem/1.3 var(--sans);letter-spacing:-.01em;text-transform:none;color:var(--ink);margin:2.5rem 0 .75rem}
+article p{font-size:1.0625rem;line-height:1.7;max-width:64ch}
+article code{font:400 .88em/1 var(--mono);background:var(--row);border:1px solid var(--line);border-radius:.3rem;padding:.08em .35em}
+.byline{font:400 .8rem/1.6 var(--mono);color:var(--muted);margin:0 0 1.25rem}
+</style>
+</head>
+<body>
+<main>
+<nav aria-label="Site"><b><a href="/">Felipe Alvarenga</a></b><ul><li><a href="/#ai">AI</a></li><li><a href="/#work">Work</a></li><li><a href="/#writing">Writing</a></li><li><a href="/#press">Press</a></li></ul></nav>
+<article>
+<p class="byline">28 October 2026 · 7 min read</p>
+<h1>What breaks when an AI reads a bank statement</h1>
+<p class="standfirst">Eighteen months of running a language model against real books at a small-business fintech. A list of the things that actually went wrong, with dates, because I kept notes.</p>
+
+<p>We shipped the classifier in April 2025. A bank line comes in from QuickBooks, the model picks an account from that client's chart of accounts, an accountant looks at it and clicks approve or fixes it. I remember thinking the hard part was going to be the prompt. It wasn't. I don't think I touched the prompt in a meaningful way after June. What I touched, over and over, for a year and a half, was everything around it.</p>
+
+<p>Some background so you know who's talking. I wrote trading systems for a long time, then went and got a financial planner certification (CFP, 2015, mostly out of curiosity about where the money went after my code moved it), and now I'm the senior engineer on the accounting side of a fintech in New York. So when something is off in a ledger I tend to feel it before I can explain it, which is useful, and also means I sometimes trust the feeling too much. Both of those show up below.</p>
+
+<h2>The one time the model was actually wrong</h2>
+
+<p>October 9th this year. The model returned an <code>account_id</code> that did not exist in the client's chart of accounts. Short, well formed, looked exactly like the real ones. We had a length check on that field. It passed. If the row had gone through, we'd have posted a purchase to an account that nobody had, and QuickBooks would have told us so, eventually, in a background job, in a way nobody was watching. The fix is one line: if the id isn't in the list we sent the model, it's an error. One line, and I'm a little embarrassed it took until October.</p>
+
+<p>That is the only incident in eighteen months I'd honestly file under "the model made it up". The rest is us.</p>
+
+<h2>Everything else</h2>
+
+<p>The expensive one. Around September accountants started seeing lines marked "Deleted in QuickBooks" that were sitting right there in QuickBooks, not deleted. We blamed sync timing for a while. Then the provider. Then I read the sync code properly, which I should have done first. The sync built its set of "lines we saw this run" from the transactions it had already filtered. So anything a filter dropped (a deposit with no payee, a line that failed validation, anything on page two when we'd stopped reading at page one because the API's <code>totalCount</code> underreports) was treated as gone. And a month that never got re-synced stayed deleted forever. There was no model anywhere near this bug. It was a plain list-building mistake, and it had been quietly deleting rows since the beginning.</p>
+
+<p>Fix merged September 30th: record presence from the raw payload before any filter runs, and if the fetch was incomplete, mark nothing. There's still a small residue of deletions I can't explain. My current guess is unstable page order, because the queries have no <code>ORDER BY</code>, but I haven't proved it, and I'm writing that down here so I don't forget it's a guess.</p>
+
+<p>Then the statement PDFs. A bank statement is a weird file. The header and the bank's address are selectable text; the table with the actual numbers is often an image somebody pasted in. Our first extractor asked "did we get any text?", got yes, and handed the model a page of labels with no amounts. The model, being a model, returned a perfectly shaped JSON with nothing financial in it. Nobody noticed for a bit because it looked right. Now we use pypdf across every page, reject image-only files outright instead of OCRing them, and refuse to send anything to the model unless there are at least five numbers on the page that aren't years. Five is arbitrary. I know. It's still a sparse check, and I don't believe a cheap check exists that proves a table came through whole. The thing I'd do with more time is look at each page's modality separately and keep the text and the rendered image as two witnesses, and when they disagree on a number, stop and ask a human. We're not there.</p>
+
+<p>Approval vs. posting. This one I got wrong conceptually, not just in code. An accountant approves a row. The row leaves the queue. A green toast says done. What we had actually done was write "approved" in our own database. The write to QuickBooks happens later, grouped by transaction, in a worker, and the worker can fail for reasons that have nothing to do with the approval: a stale object, an account that went inactive, a payload QuickBooks stopped accepting. So for a while a row could disappear from the queue, fail quietly, and show up nowhere the accountant was looking. We gave that a name, sync conflict, attached the provider's error and a note a person can read, and wrote down the contract that approved rows stay visible until the ledger confirms them. (As of September 9th that contract was still a document and not fully code. I'm being specific about that on purpose.)</p>
+
+<p>Repairs, briefly. On July 7th a batch of rows got rejected by mistake and I wanted to put them back. The obvious fix is one UPDATE, set them all to pending review. Except each row had come from a different queue (AI review, accountant review, client review) and each queue has a paired "source" column saying who last touched it. A pending-AI-review row with source = accountant is a contradiction the system can't reason about, and I had nearly written it. So: each row goes back to the queue its own changelog says it left, status and source move together, the repair writes a new audit entry and leaves the old rejection in place, and you dry-run it with counts first. If the count surprises you, you don't understand the data yet. I didn't, the first time.</p>
+
+<p>And the sandbox. August 20th. We were designing bank reconciliation on top of an open-banking provider, and in the sandbox every transaction carried a running balance, which made the design easy. Then we connected a real account. Zero of twenty four real transactions had <code>runningBalanceAmount</code>. The sandbox's sample statement had a closing balance that matched the account, which cheered me up for about an hour, until I noticed the PDF itself was dated 2017 and the metadata said 2026. So nothing in that sandbox could validate the thing I was building. The design shrank to: store the statement, store the ending balance if we have one, compare only when the provider actually gives us the data, and make "unavailable" a real state in the UI instead of a null.</p>
+
+<p>Oh, and the thing that's probably obvious to accountants and wasn't to me: QuickBooks hands us eight transaction types and only three of them (purchases, bills, deposits) can be classified at all. Invoices come through as read-only. Journal entries, transfers and payments we only ever see inside reports. So "the AI reads your books" is, in practice, "the AI reads about a third of your books, the third that's mostly spending". I say that to people now before anything else.</p>
+
+<p>What I'd tell someone starting this next week, in no particular order: validate every model output against the tenant's own records, because a well-formed id can be invented; never infer that a thing is gone from a list you already filtered; treat "we got text" and "we got the numbers" as two different events, per page; show the local decision and the provider's answer as two states, a toast is not a posting; and keep a set of real, reviewed lines and score every model or prompt change against it in CI. Ours has blocked more regressions than code review has. Also assume the sandbox is wrong about the exact thing you care about, and check with one real account before you design around it.</p>
+
+<p>None of this wanted a bigger model. I suspect that's the uncomfortable bit for people who'd like AI accounting to be a model problem, because model problems get solved by someone else next quarter. These were data problems, and data problems are yours.</p>
+
+<p>If you're running a model against real books and you've hit something that isn't on this list, I'd genuinely like to hear it. My list is eighteen months long and I'm sure it's not done.</p>
+</article>
+<footer><a href="/">Home</a><a href="https://www.linkedin.com/in/felipealvarenga">LinkedIn</a><a href="mailto:felipealvarengarc@gmail.com">Email</a><span>Brazil</span></footer>
+</main>
+</body>
+</html>

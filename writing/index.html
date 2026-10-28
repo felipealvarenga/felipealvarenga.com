@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Writing, Felipe Alvarenga</title>
+<meta name="description" content="Essays on AI in accounting, agent-run engineering teams, and twenty years of financial systems. By Felipe Alvarenga.">
+<link rel="canonical" href="https://felipealvarenga.com/writing/">
+<link rel="alternate" type="application/rss+xml" title="Felipe Alvarenga, writing" href="https://felipealvarenga.com/feed.xml">
+<meta property="og:title" content="Writing, Felipe Alvarenga">
+<meta property="og:description" content="Essays on AI in accounting, agent-run engineering teams, and financial systems.">
+<meta property="og:url" content="https://felipealvarenga.com/writing/">
+<meta property="og:type" content="website">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%23101114'/%3E%3Ctext x='16' y='22' text-anchor='middle' font-family='system-ui,sans-serif' font-size='17' font-weight='600' fill='%23f2f2f3'%3EF%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Geist+Mono:wght@400&display=swap">
+<style>
+:root{
+  color-scheme:dark;
+  --bg:oklch(13% 0.005 250);--row:oklch(19% 0.006 250);--ink:oklch(96% 0.003 250);--muted:oklch(66% 0.008 250);--line:oklch(26% 0.006 250);
+  --sans:"Geist",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;--mono:"Geist Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
+}
+@media (prefers-color-scheme:light){:root{
+  color-scheme:light;
+  --bg:oklch(99% 0.002 250);--row:oklch(95.5% 0.004 250);--ink:oklch(15% 0.006 250);--muted:oklch(50% 0.008 250);--line:oklch(90% 0.004 250);
+}}
+*{box-sizing:border-box}
+html{background:var(--bg)}
+body{margin:0;background:var(--bg);color:var(--ink);font:400 1rem/1.6 var(--sans);-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+main{max-width:42rem;margin:0 auto;padding:clamp(1.5rem,5vw,3.5rem) clamp(1rem,4vw,2rem) 4rem}
+a{color:inherit;text-decoration:underline;text-decoration-color:var(--line);text-decoration-thickness:1px;text-underline-offset:.2em;transition:text-decoration-color .15s}
+a:hover{text-decoration-color:var(--ink)}
+:focus-visible{outline:2px solid var(--ink);outline-offset:3px;border-radius:2px}
+p{max-width:62ch;margin:0 0 1rem}
+nav{display:flex;align-items:baseline;justify-content:space-between;gap:1rem;flex-wrap:wrap;margin-bottom:clamp(3rem,10vw,5.5rem)}
+nav b{font-weight:500}
+nav ul{display:flex;gap:1.25rem;margin:0;padding:0;list-style:none;font-size:.9rem;color:var(--muted)}
+nav a{text-decoration:none}
+nav a:hover{color:var(--ink)}
+.intro{font-size:clamp(1.15rem,2.4vw,1.35rem);line-height:1.5;max-width:34ch;margin:0 0 .75rem;font-weight:500;letter-spacing:-.01em}
+.intro+p{color:var(--muted);max-width:52ch;margin-bottom:0}
+section{margin-top:clamp(2.75rem,8vw,4.5rem)}
+h2{font:500 .8rem/1 var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin:0 0 .5rem}
+.rows{list-style:none;margin:0;padding:0}
+.rows li{border-top:1px solid var(--line)}
+.rows li:last-child{border-bottom:1px solid var(--line)}
+.row{display:grid;grid-template-columns:4rem 1fr auto;gap:.25rem 1rem;align-items:baseline;padding:.7rem .6rem;margin:0 -.6rem;border-radius:.4rem;text-decoration:none;transition:background .15s}
+a.row:hover{background:var(--row)}
+.row time,.row .meta{font:400 .8rem/1.6 var(--mono);color:var(--muted);white-space:nowrap}
+.row .meta{text-align:right}
+.row span{display:block}
+.row small{display:block;font-size:.9rem;color:var(--muted)}
+@media (max-width:480px){.row{grid-template-columns:4rem 1fr}.row .meta{grid-column:2;text-align:left}}
+.press p{color:var(--muted)}
+.press p b{color:var(--ink);font-weight:500}
+footer{margin-top:clamp(3rem,10vw,5rem);padding-top:1.25rem;border-top:1px solid var(--line);display:flex;flex-wrap:wrap;gap:.5rem 1.25rem;font-size:.9rem;color:var(--muted)}
+footer span{margin-left:auto}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+
+.lede{font-size:clamp(1.15rem,2.4vw,1.35rem);line-height:1.5;max-width:34ch;margin:0 0 .75rem;font-weight:500;letter-spacing:-.01em}
+.lede+p{color:var(--muted);max-width:52ch}
+.rows .meta a{text-decoration:none}
+</style>
+</head>
+<body>
+<main>
+<nav aria-label="Site"><b><a href="/">Felipe Alvarenga</a></b><ul><li><a href="/#ai">AI</a></li><li><a href="/#work">Work</a></li><li><a href="/writing/">Writing</a></li><li><a href="/#press">Press</a></li></ul></nav>
+<p class="lede">Essays on what breaks when AI meets real money, and on running an engineering team with agents.</p>
+<p>Written from incidents, with dates. One every few weeks. <a href="/feed.xml">RSS</a>, or <a href="mailto:felipealvarengarc@gmail.com">email me</a> to republish one.</p>
+<section aria-labelledby="h-essays">
+  <h2 id="h-essays">Essays</h2>
+  <ul class="rows"><li><a class="row" href="/writing/ai-reads-a-bank-statement/"><time datetime="2026-10-28">2026</time><span>What breaks when an AI reads a bank statement<small>Eighteen months of a language model against real books: the invented account id, the false deletions, the PDF with no numbers, and why approval is not posting.</small></span><span class="meta">7 min</span></a></li></ul>
+</section>
+<section aria-labelledby="h-next">
+  <h2 id="h-next">Coming next</h2>
+  <ul class="rows"><li><div class="row"><time>next</time><span>When agents write most of the code<small>Google reports 75% of its new code is AI-generated and engineer-approved (April 2026). What that number hides, measured on one team.</small></span><span class="meta">topic</span></div></li><li><div class="row"><time>next</time><span>The engineer who became a financial planner<small>Why I took the CFP® exam after years of writing trading code, and what it changed about the systems I build.</small></span><span class="meta">topic</span></div></li><li><div class="row"><time>next</time><span>Lessons from Vety<small>Four years as a founder, 350 veterinarians, angel money, and what I would not do again.</small></span><span class="meta">topic</span></div></li></ul>
+</section>
+<footer><a href="/">Home</a><a href="/writing/">Writing</a><a href="/feed.xml">RSS</a><a href="https://www.linkedin.com/in/felipealvarenga">LinkedIn</a><a href="mailto:felipealvarengarc@gmail.com">Email</a><span>Brazil</span></footer>
+</main>
+</body>
+</html>
